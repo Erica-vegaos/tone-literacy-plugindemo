@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  title: Tone Literacy Plugin API
+  description: API for classifying sentences into tone levels (A–D) and providing explanations.
+  version: 1.0.0
+paths:
+  /classify-tone:
+    post:
+      summary: Classify a sentence into tone level A–D
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sentence:
+                  type: string
+                  description: The sentence to classify
+      responses:
+        '200':
+          description: Successful classification
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tone_level:
+                    type: string
+                    enum: [A, B, C, D]
+                    description: The determined tone level
+                  explanation:
+                    type: string
+                    description: Explanation of the tone level assigned
+                  hallucination_risk:
+                    type: string
+                    enum: [low, medium, high]
+                    description: Risk estimate of hallucination in the sentence
+                  revision_suggestion:
+                    type: string
+                    description: Suggested revision to lower hallucination risk or clarify tone
