@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tone Profiler Demo</title>
+</head>
+<body>
+  <h1>Erica Vega｜Tone Literacy Plugin</h1>
+  <p>Enter a sentence below to test its tone classification (A–D):</p>
+  <form id="toneForm">
+    <input type="text" id="sentence" placeholder="Enter your sentence" size="60" />
+    <button type="submit">Classify</button>
+  </form>
+  <pre id="result"></pre>
+
+  <script>
+    document.getElementById('toneForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const sentence = document.getElementById('sentence').value;
+      const res = await fetch('/api/classify-tone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sentence })
+      });
+      const data = await res.json();
+      document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
