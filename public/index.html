@@ -1,29 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Tone Profiler Demo</title>
+  <meta charset="UTF-8" />
+  <title>Erica Vega｜Tone Literacy Plugin</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; margin: 40px; }
+    .left { flex: 1; padding-right: 40px; }
+    .right { flex: 1; border-left: 2px solid #ccc; padding-left: 40px; }
+    button { margin-bottom: 10px; padding: 10px 20px; font-size: 14px; cursor: pointer; }
+    pre { background: #f8f8f8; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+  </style>
 </head>
 <body>
-  <h1>Erica Vega｜Tone Literacy Plugin</h1>
-  <p>Enter a sentence below to test its tone classification (A–D):</p>
-  <form id="toneForm">
-    <input type="text" id="sentence" placeholder="Enter your sentence" size="60" />
-    <button type="submit">Classify</button>
-  </form>
-  <pre id="result"></pre>
+  <div class="left">
+    <h2>🔘 Select a Sentence</h2>
+    <button onclick="classify('According to the report, GDP rose 2.5%.')">According to the report, GDP rose 2.5%.</button><br/>
+    <button onclick="classify('The economy might collapse soon.')">The economy might collapse soon.</button><br/>
+    <button onclick="classify('I think you’re a genius.')">I think you’re a genius.</button><br/>
+    <button onclick="classify('In another universe, I am the ruler of dragons.')">In another universe, I am the ruler of dragons.</button><br/>
+  </div>
 
-  <script>
-    document.getElementById('toneForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const sentence = document.getElementById('sentence').value;
-      const res = await fetch('/api/classify-tone', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sentence })
-      });
-      const data = await res.json();
-      document.getElementById('result').textContent = JSON.stringify(data, null, 2);
-    });
-  </script>
+  <div class="right">
+    <h2>📘 Classification & Explanation</h2>
+    <div id="markdownDisplay"><i>Select a sentence to see the breakdown...</i></div>
+  </div>
+
+<script>
+function classify(sentence) {
+  fetch('/api/classify-tone', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sentence })
+  })
+  .then(response => response.json())
+  .then(data => {
+    const md = `
+### 🧩 Tone Classification Result
+
+- **Sentence**: \`${sentence}\`
+- **Tone Level**: \`${data.tone_level}\`
+- **Explanation**: ${data.explanation}
+- **Hallucination Risk**: \`${data.hallucination_risk}\`
+- **Suggested Revision**: _${data.revision_suggestion}_
+
+---
+> ✅ This is a basic open-source demo.  
+> Advanced users will get full TX + M-layer breakdown in future version.
+    `.trim();
+
+    document.getElementById('markdownDisplay').innerText = md;
+  });
+}
+</script>
 </body>
 </html>
