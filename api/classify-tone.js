@@ -1,7 +1,4 @@
-const express = require('express');
-const router = express.Router();
-
-router.post('/', (req, res) => {
+export default function handler(req, res) {
   const { sentence } = req.body;
   let response = {
     tone_level: "C",
@@ -33,7 +30,5 @@ router.post('/', (req, res) => {
     };
   }
 
-  res.json(response);
-});
-
-module.exports = router;
+  res.status(200).json(response);
+}
