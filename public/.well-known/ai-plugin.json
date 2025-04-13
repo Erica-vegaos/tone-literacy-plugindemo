@@ -1,0 +1,15 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Tone Literacy Plugin",
+  "name_for_model": "tone_literacy_plugin",
+  "description_for_human": "Classify sentences into tone levels (A–D) and explain the reasoning.",
+  "description_for_model": "Provides tone classification (A–D) for input sentences, returns explanations, hallucination risks, and suggestions.",
+  "auth": { "type": "none" },
+  "api": {
+    "type": "openapi",
+    "url": "https://your-domain.com/openapi.yaml"
+  },
+  "logo_url": "https://your-domain.com/logo.png",
+  "contact_email": "support@your-domain.com",
+  "legal_info_url": "https://your-domain.com/legal"
+}
