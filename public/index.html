@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <title>Tone Literacy Plugin | Responsive</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>
+ <script>
   async function classify(sentence) {
     const loader = document.getElementById('loadingSpinner');
     const textBox = document.getElementById('markdownText');
 
     loader.style.display = 'flex';
-    textBox.innerText = '';
+    textBox.innerHTML = ''; // 清空
 
     try {
       const response = await fetch('/api/classify-tone', {
@@ -19,30 +19,42 @@
         body: JSON.stringify({ sentence })
       });
 
-      if (!response.ok) throw new Error("Fetch failed");
-
       const data = await response.json();
 
-      const md = `
-### 🧩 語氣分析結果
+      const isChinese = /[\u4e00-\u9fff]/.test(sentence);
 
-- **句子**: \`${sentence}\`
-- **分級**: \`${data.tone_level}\`
-- **解釋**: ${data.explanation}
-- **幻覺風險**: \`${data.hallucination_risk}\`
-- **建議修正**: _${data.revision_suggestion}_
+      const output = isChinese
+        ? `
+          <div class="result-block">
+            <p><strong>句子：</strong>${sentence}</p>
+            <p><strong>分級：</strong><span class="tone-level tone-${data.tone_level.toLowerCase()}">${data.tone_level}</span></p>
+            <p><strong>語氣解釋：</strong>${data.explanation}</p>
+            <p><strong>幻覺風險：</strong><span class="risk-${data.hallucination_risk}">${riskLabel(data.hallucination_risk)}</span></p>
+            <p><strong>修正建議：</strong>${data.revision_suggestion}</p>
+          </div>`
+        : `
+          <div class="result-block">
+            <p><strong>Sentence:</strong> ${sentence}</p>
+            <p><strong>Grade:</strong> <span class="tone-level tone-${data.tone_level.toLowerCase()}">${data.tone_level}</span></p>
+            <p><strong>Explanation:</strong> ${data.explanation}</p>
+            <p><strong>Hallucination Risk:</strong> <span class="risk-${data.hallucination_risk}">${data.hallucination_risk}</span></p>
+            <p><strong>Suggestion:</strong> ${data.revision_suggestion}</p>
+          </div>`;
 
----
-> 本結果由 GPT 語氣分析模組自動生成。
-      `.trim();
-
-      textBox.innerText = md;
+      textBox.innerHTML = output;
 
     } catch (e) {
-      textBox.innerText = '⚠️ 分析失敗，請稍後再試。';
+      textBox.innerHTML = '⚠️ 無法連線至分析伺服器，請稍後再試。';
     } finally {
       loader.style.display = 'none';
     }
+  }
+
+  function riskLabel(risk) {
+    if (risk === 'high') return '高';
+    if (risk === 'medium') return '中';
+    if (risk === 'low') return '低';
+    return '';
   }
 </script>
 
@@ -150,12 +162,38 @@
         grid-template-columns: repeat(3, 1fr);
       }
     }
+.result-block p {
+  margin: 6px 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+.tone-level {
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.tone-a { background: #a6f7c6; color: #000; }
+.tone-b { background: #a9d9ff; color: #000; }
+.tone-c { background: #ffd29d; color: #000; }
+.tone-d { background: #e3b0f7; color: #000; }
+.risk-high { color: #ff6c6c; font-weight: bold; }
+.risk-medium { color: #f9e861; font-weight: bold; }
+.risk-low { color: #3df2b1; font-weight: bold; }
+
+
+
+
   </style>
 </head>
 <body>
-  <div class="header">TONE–LITERACY–PLUGIN <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span></div>
-  <br><br>
+  <div class="header" style="display:flex; align-items:center; gap:12px;">
+  <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/topicon.png" alt="Tone Literacy Plugin" style="height:32px;" />
+  <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span>
+</div>
 
+  <br><br>
+max-width: 1080px;
+margin: 0 auto;
   <div class="layout-desktop">
     <div class="markdown-box">
   <div id="loadingSpinner" style="display:none; flex-direction:column; align-items:center; justify-content:center; margin-top:20px;">
@@ -163,7 +201,7 @@
     <p style="text-align:center; font-size:12px;">分析中，請稍候…</p>
   </div>
   <div id="markdownText">
-    <i>請點選句子進行語氣分析 Click the text to see the tone-literacy-plugin.</i>
+    <i>請點選句子進行語氣分析 <BR> Click the text to see the tone-literacy-plugin.</i>
   </div>
 </div>
 
