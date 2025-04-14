@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -8,9 +7,11 @@
   <script>
     async function classify(sentence) {
       const loader = document.getElementById('loadingSpinner');
-      const box = document.getElementById('markdownDisplay');
-      loader.style.display = 'inline-block';
-      box.textContent = '';
+      const textBox = document.getElementById('markdownText');
+
+      loader.style.display = 'flex';
+      textBox.innerText = ''; // 清空先前結果
+
       try {
         const response = await fetch('/api/classify-tone', {
           method: 'POST',
@@ -30,9 +31,9 @@
 ---
 > 本結果由 GPT 語氣分析模組自動生成。
         `.trim();
-        box.innerText = md;
+        textBox.innerText = md;
       } catch (e) {
-        box.innerText = '⚠️ 無法連線至分析伺服器，請稍後再試。';
+        textBox.innerText = '⚠️ 無法連線至分析伺服器，請稍後再試。';
       } finally {
         loader.style.display = 'none';
       }
@@ -62,8 +63,28 @@
       border-radius: 8px;
       border: 1px solid #444;
       min-height: 320px;
-      white-space: pre-wrap;
       margin-bottom: 20px;
+      position: relative;
+    }
+    #loadingSpinner {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 40px;
+    }
+    .loader {
+      border: 5px solid #ccc;
+      border-top: 5px solid #46d0cc;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 8px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     .grid {
       display: grid;
@@ -99,19 +120,6 @@
     .grid .logo img {
       width: 60%;
     }
-    .loader {
-      border: 5px solid #ccc;
-      border-top: 5px solid #46d0cc;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
     .footer {
       font-size: 14px;
       margin-top: 40px;
@@ -139,20 +147,18 @@
 </head>
 <body>
   <div class="header">TONE–LITERACY–PLUGIN <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span></div>
- <br><br>
+  <br><br>
 
- <div class="layout-desktop">
-  <!-- 🔄 Loading 動畫 -->
-  <div id="loadingSpinner" style="display:none;">
-    <div class="loader"></div>
-<p style="text-align:center; font-size:12px;">分析中，請稍候…</p>
-  </div>
- <br><br>
-  <!-- 🧠 語氣分析區 -->
-  <div class="markdown-box" id="markdownDisplay">
-    <i>請點選句子進行句子分析 Click the text to see the tone-literacy-plugin.</i>
-  </div>
-
+  <div class="layout-desktop">
+    <div class="markdown-box">
+      <div id="loadingSpinner">
+        <div class="loader"></div>
+        <p style="text-align:center; font-size:12px;">分析中，請稍候…</p>
+      </div>
+      <div id="markdownText">
+        <i>請點選句子進行語氣分析 Click the text to see the tone-literacy-plugin.</i>
+      </div>
+    </div>
 
     <div class="grid">
       <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資<br>自 2024 年起為<br>每月 27,470 元。</button>
@@ -163,7 +169,8 @@
       <button onclick="classify('Imagine a future where robots run entire governments without human input.')">Imagine a future where robots run entire governments without human input.</button>
       <button onclick="classify('According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.')">According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.</button>
       <button onclick="classify('GPT 模型是一種基於 Transformer 架構的深度學習演算法。')">GPT 模型是一種基於 Transformer 架構的深度學習演算法。</button>
-      <div class="logo"><img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/logo.png" alt="logo" /></div>    </div>
+      <div class="logo"><img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/logo.png" alt="logo" /></div>
+    </div>
   </div>
 
   <div class="footer">
@@ -176,7 +183,7 @@
       <strong>中文</strong><br>
       <a href="https://www.notion.so/">Notion</a> |
       <a href="https://www.dcard.tw/@kk7493zzoo">Dcard</a> |
-      <a href="https://www.instagram.com/ericaxvega">Instagram@ericaxvega</a> 
+      <a href="https://www.instagram.com/ericaxvega">Instagram@ericaxvega</a>
     </div>
   </div>
 </body>
