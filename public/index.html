@@ -25,29 +25,27 @@
 
       const output = isChinese
         ? `
-         <div class="result-block">
-  <p><strong>句子：</strong><br>${sentence}</p>
-  <p><strong>分級：</strong>
-    <span class="tone-level tone-${data.tone_level.toLowerCase()}">${data.tone_level}</span>
-  </p>
-  <p><strong>語氣解釋：</strong></p>
-  <p>${data.explanation}</p>
-  <p><strong>幻覺風險：</strong>
-    <span class="risk-${data.hallucination_risk}">${riskLabel(data.hallucination_risk)}</span>
-  </p>
-  <p><strong>修正建議：</strong></p>
-  <p>${data.revision_suggestion}</p>
-</div>
-
+          <div class="result-block">
+            <p><strong>句子：</strong><br>${sentence}</p>
+            <p><strong>分級：</strong>
+              <span class="tone-level tone-${data.tone_level.toLowerCase()}">${data.tone_level}</span>
+            </p>
+            <p><strong>語氣解釋：</strong></p>
+            <p>${data.explanation}</p>
+            <p><strong>幻覺風險：</strong>
+              <span class="risk-${data.hallucination_risk}">${riskLabel(data.hallucination_risk)}</span>
+            </p>
+            <p><strong>修正建議：</strong></p>
+            <p>${data.revision_suggestion}</p>
+          </div>`
         : `
           <div class="result-block">
-           <p><strong>Sentence:</strong><br>${sentence}</p>
+            <p><strong>Sentence:</strong><br>${sentence}</p>
             <p><strong>Grade:</strong> <span class="tone-level tone-${data.tone_level.toLowerCase()}">${data.tone_level}</span></p>
             <p><strong>Explanation:</strong><br>${data.explanation}</p>
             <p><strong>Hallucination Risk:</strong> <span class="risk-${data.hallucination_risk}">${data.hallucination_risk}</span></p>
             <p><strong>Suggestion:</strong><br>${data.revision_suggestion}</p>
-
-          </div>`;
+          </div>`;  // ✅ <—這個結尾才是你少掉的括號關鍵！
 
       textBox.innerHTML = output;
 
@@ -65,6 +63,7 @@
     return '';
   }
 </script>
+
 
   <style>
     body {
@@ -196,7 +195,7 @@
 <body>
   <div style="display: flex; justify-content: center; margin-top: 20px;">
   <div class="header" style="display: flex; align-items: center; gap: 12px;">
-    <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/topicon.png" alt="Tone Literacy Plugin" style="height: 26px;" />
+    <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/topicon.png" alt="Tone Literacy Plugin" style="height: 26px;" /><br>
     <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span>
   </div>
 </div>
@@ -238,13 +237,13 @@
     <div>
       <strong>ENG</strong><br>
       <a href="https://lesswrong.com/">Lesswrong</a> |
-      <a href="https://github.com/Erica-vegaos">Github</a> |
-      <a href="https://medium.com/">Medium</a> |
-      <a href="https://www.instagram.com/erica.vega.logs">Instagram@erica.vega.logs</a><br><br>
+      <a href="https://github.com/Erica-vegaos"> Github</a> |
+      <a href="https://medium.com/"> Medium</a> |
+      <a href="https://www.instagram.com/erica.vega.logs"> Instagram@erica.vega.logs</a><br><br>
       <strong>中文</strong><br>
       <a href="https://www.notion.so/">Notion</a> |
-      <a href="https://www.dcard.tw/@kk7493zzoo">Dcard</a> |
-      <a href="https://www.instagram.com/ericaxvega">Instagram@ericaxvega</a>
+      <a href="https://www.dcard.tw/@kk7493zzoo"> Dcard</a> |
+      <a href="https://www.instagram.com/ericaxvega"> Instagram@ericaxvega</a>
     </div>
   </div>
 </body>
