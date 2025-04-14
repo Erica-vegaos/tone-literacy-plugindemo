@@ -141,11 +141,18 @@
   <div class="header">TONE–LITERACY–PLUGIN <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span></div>
  <br><br>
 
-  <div class="layout-desktop">
-    <div class="markdown-box" id="markdownDisplay">
-      <i>請點選下方句子進行句子分析 Click the text below to see the tone-literacy-plugin.</i>
-      <div id="loadingSpinner" style="display:none;"></div>
-    </div>
+ <div class="layout-desktop">
+  <!-- 🔄 Loading 動畫 -->
+  <div id="loadingSpinner" style="display:none;">
+    <div class="loader"></div>
+<p style="text-align:center; font-size:12px;">分析中，請稍候…</p>
+  </div>
+
+  <!-- 🧠 語氣分析區 -->
+  <div class="markdown-box" id="markdownDisplay">
+    <i>請點選句子進行句子分析 Click the text to see the tone-literacy-plugin.</i>
+  </div>
+
 
     <div class="grid">
       <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資<br>自 2024 年起為<br>每月 27,470 元。</button>
@@ -167,9 +174,9 @@
       <a href="https://medium.com/">Medium</a> |
       <a href="https://www.instagram.com/erica.vega.logs">Instagram@erica.vega.logs</a><br><br>
       <strong>中文</strong><br>
-      <a href="https://www.notion.so/">Notion</a>
+      <a href="https://www.notion.so/">Notion</a> |
       <a href="https://www.dcard.tw/@kk7493zzoo">Dcard</a> |
-      <a href="https://www.instagram.com/ericaxvega">Instagram@ericaxvega</a> |
+      <a href="https://www.instagram.com/ericaxvega">Instagram@ericaxvega</a> 
     </div>
   </div>
 </body>
