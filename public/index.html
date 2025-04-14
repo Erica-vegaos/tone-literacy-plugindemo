@@ -5,64 +5,97 @@
   <title>Tone Literacy Plugin | Responsive</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <script>
-  async function classify(sentence) {
-    const loader = document.getElementById('loadingSpinner');
-    const textBox = document.getElementById('markdownText');
-
-    loader.style.display = 'flex';
-    textBox.innerHTML = ''; // 清空
-
-    try {
-      const response = await fetch('/api/classify-tone', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sentence })
-      });
-
-      const data = await response.json();
-
-      const isChinese = /[\u4e00-\u9fff]/.test(sentence);
-
-      const output = isChinese
-        ? `
-          <div class="result-block">
-            <p><strong>句子：</strong><br>${sentence}</p>
-            <p><strong>分級：</strong>
-              <span class="tone-level tone-${data.tone_level.toLowerCase()}">${data.tone_level}</span>
-            </p>
-            <p><strong>分級解釋：</strong></p>
-            <p>${data.explanation}</p>
-            <p><strong>幻覺風險：</strong>
-              <span class="risk-${data.hallucination_risk}">${riskLabel(data.hallucination_risk)}</span>
-            </p>
-            <p><strong>使用建議：</strong></p>
-            <p>${data.revision_suggestion}</p>
-          </div>`
-        : `
-          <div class="result-block">
-            <p><strong>Sentence:</strong><br>${sentence}</p>
-            <p><strong>Grade:</strong> <span class="tone-level tone-${data.tone_level.toLowerCase()}">${data.tone_level}</span></p>
-            <p><strong>Explanation:</strong><br>${data.explanation}</p>
-            <p><strong>Hallucination Risk:</strong> <span class="risk-${data.hallucination_risk}">${data.hallucination_risk}</span></p>
-            <p><strong>Suggestion:</strong><br>${data.revision_suggestion}</p>
-          </div>`;  // ✅ <—這個結尾才是你少掉的括號關鍵！
-
-      textBox.innerHTML = output;
-
-    } catch (e) {
-      textBox.innerHTML = '⚠️ 無法連線至分析伺服器，請稍後再試。';
-    } finally {
-      loader.style.display = 'none';
-    }
+const staticToneMap = {
+  "台灣的法定最低工資自 2024 年起為每月 27,470 元。": {
+    grade: "A",
+    explanation: "屬於可查證之政策事實，具明確來源。",
+    hallucination_risk: "低",
+    revision_suggestion: "無需修改。"
+  },
+  "我認為他是我見過最有魅力的產品經理。": {
+    grade: "C",
+    explanation: "屬於主觀評價與個人觀點。",
+    hallucination_risk: "中",
+    revision_suggestion: "如需提升客觀性，可去除個人立場描述。"
+  },
+  "想像一下，你成為首富的那一刻。": {
+    grade: "D",
+    explanation: "屬於幻想式敘事語句，非真實語境。",
+    hallucination_risk: "高",
+    revision_suggestion: "如要轉為實際推論，應補充具體條件與背景。"
+  },
+  "GPT 模型是一種基於 Transformer 架構的深度學習演算法。": {
+    grade: "A",
+    explanation: "為技術事實描述，可查證、具客觀性。",
+    hallucination_risk: "低",
+    revision_suggestion: "無需修改。"
+  },
+  "AI tools might soon replace over 50% of routine coding tasks.": {
+    grade: "B",
+    explanation: "A logical inference based on observable trends.",
+    hallucination_risk: "medium",
+    revision_suggestion: "Add recent data or expert citation to strengthen the claim."
+  },
+  "I honestly think this is the most beautifully designed laptop ever.": {
+    grade: "C",
+    explanation: "A subjective statement reflecting personal opinion.",
+    hallucination_risk: "medium",
+    revision_suggestion: "Consider using neutral language to reduce subjectivity."
+  },
+  "Imagine a future where robots run entire governments without human input.": {
+    grade: "D",
+    explanation: "A fictional scenario framed as speculative narrative.",
+    hallucination_risk: "high",
+    revision_suggestion: "Clarify the speculative nature to avoid interpretive ambiguity."
+  },
+  "According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.": {
+    grade: "A",
+    explanation: "Contains a verifiable technical statement with citation.",
+    hallucination_risk: "low",
+    revision_suggestion: "Ensure the cited specification is accurate and current."
   }
+};
 
-  function riskLabel(risk) {
-    if (risk === 'high') return '高';
-    if (risk === 'medium') return '中';
-    if (risk === 'low') return '低';
-    return '';
-  }
+function classify(sentence) {
+  const loader = document.getElementById('loadingSpinner');
+  const textBox = document.getElementById('markdownText');
+  loader.style.display = 'flex';
+  textBox.innerHTML = '';
+
+  const result = staticToneMap[sentence] || {
+    grade: "C",
+    explanation: "預設分類：未收錄語句，判定為主觀語氣。",
+    hallucination_risk: "中",
+    revision_suggestion: "請使用指定範例句，或補充內容以利分析。"
+  };
+
+  const isChinese = /[\u4e00-\u9fff]/.test(sentence);
+  const riskMap = { high: "高", medium: "中", low: "低" };
+  const riskLabel = isChinese ? riskMap[result.hallucination_risk] : result.hallucination_risk;
+
+  const output = isChinese
+    ? `<div class="result-block">
+        <p><strong>句子：</strong><br>${sentence}</p>
+        <p><strong>分級：</strong> <span class="tone-level tone-${result.grade.toLowerCase()}">${result.grade}</span></p>
+        <p><strong>語氣解釋：</strong><br>${result.explanation}</p>
+        <p><strong>幻覺風險：</strong> <span class="risk-${result.hallucination_risk}">${riskLabel}</span></p>
+        <p><strong>使用建議：</strong><br>${result.revision_suggestion}</p>
+       </div>`
+    : `<div class="result-block">
+        <p><strong>Sentence:</strong><br>${sentence}</p>
+        <p><strong>Grade:</strong> <span class="tone-level tone-${result.grade.toLowerCase()}">${result.grade}</span></p>
+        <p><strong>Explanation:</strong><br>${result.explanation}</p>
+        <p><strong>Hallucination Risk:</strong> <span class="risk-${result.hallucination_risk}">${riskLabel}</span></p>
+        <p><strong>Suggestion:</strong><br>${result.revision_suggestion}</p>
+       </div>`;
+
+  setTimeout(() => {
+    textBox.innerHTML = output;
+    loader.style.display = 'none';
+  }, 400); // 模擬 loading
+}
 </script>
+
 
 
   <style>
