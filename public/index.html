@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -42,23 +43,39 @@
       color: #ffffff;
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 40px;
+      padding: 20px;
     }
-    .header { font-size: 24px; font-weight: bold; margin-bottom: 10px; letter-spacing: 2px; }
+    .header {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    .note {
+      color: #ff5f5f;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: flex-start;
+    }
     .markdown-box {
+      flex: 1;
       background: #1c1f23;
       padding: 20px;
       border-radius: 8px;
       border: 1px solid #444;
-      margin-bottom: 30px;
-      min-height: 180px;
+      min-height: 300px;
       white-space: pre-wrap;
     }
     .grid {
+      flex: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin-bottom: 30px;
     }
     .grid button {
       padding: 20px;
@@ -84,6 +101,19 @@
     .grid .logo img {
       width: 60%;
     }
+    .loader {
+      border: 5px solid #ccc;
+      border-top: 5px solid #46d0cc;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     .footer {
       font-size: 14px;
       display: flex;
@@ -95,21 +125,13 @@
       margin-right: 16px;
       text-decoration: none;
     }
-    .note { color: #ff5f5f; font-size: 13px; margin-bottom: 12px; }
-
-    .loader {
-      border: 5px solid #ccc;
-      border-top: 5px solid #46d0cc;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 10px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
@@ -117,20 +139,22 @@
   <div class="header">TONE–LITERACY–PLUGIN <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span></div>
   <div class="note">點擊下方文字按鈕進行分析模擬<br>Click the text below to see the tone-literacy-plugin.</div>
 
-  <div class="markdown-box" id="markdownDisplay">
-    <i>請點選右側句子進行語氣分析</i>
-    <div id="loadingSpinner" style="display:none;"></div>
-  </div>
+  <div class="container">
+    <div class="markdown-box" id="markdownDisplay">
+      <i>請點選右方句子進行語氣分析</i>
+      <div id="loadingSpinner" style="display:none;"></div>
+    </div>
 
-  <div class="grid">
-    <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資<br>自 2024 年起為<br>每月 27,470 元。</button>
-    <button onclick="classify('AI tools might soon replace over 50% of routine coding tasks.')">AI tools might soon replace over 50% of routine coding tasks.</button>
-    <button onclick="classify('我認為他是我見過最有魅力的產品經理。')">我認為他是我見過最有魅力的產品經理。</button>
-    <button onclick="classify('I honestly think this is the most beautifully designed laptop ever.')">I honestly think this is the most beautifully designed laptop ever.</button>
-    <div class="logo"><img src="https://drive.google.com/uc?export=view&id=1ZUb1NDo9yBuF2R36ffAgs3NhTpcdCkfM" alt="logo" /></div>
-    <button onclick="classify('想像一下，你成為首富的那一刻。')">想像一下，你成為首富的那一刻。</button>
-    <button onclick="classify('Imagine a future where robots run entire governments without human input.')">Imagine a future where robots run entire governments without human input.</button>
-    <button onclick="classify('According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.')">According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.</button>
+    <div class="grid">
+      <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資<br>自 2024 年起為<br>每月 27,470 元。</button>
+      <button onclick="classify('AI tools might soon replace over 50% of routine coding tasks.')">AI tools might soon replace over 50% of routine coding tasks.</button>
+      <button onclick="classify('我認為他是我見過最有魅力的產品經理。')">我認為他是我見過最有魅力的產品經理。</button>
+      <button onclick="classify('I honestly think this is the most beautifully designed laptop ever.')">I honestly think this is the most beautifully designed laptop ever.</button>
+      <div class="logo"><img src="https://drive.google.com/uc?export=view&id=1ZUb1NDo9yBuF2R36ffAgs3NhTpcdCkfM" alt="logo" /></div>
+      <button onclick="classify('想像一下，你成為首富的那一刻。')">想像一下，你成為首富的那一刻。</button>
+      <button onclick="classify('Imagine a future where robots run entire governments without human input.')">Imagine a future where robots run entire governments without human input.</button>
+      <button onclick="classify('According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.')">According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.</button>
+    </div>
   </div>
 
   <div class="footer">
