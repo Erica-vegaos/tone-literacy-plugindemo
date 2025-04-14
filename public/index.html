@@ -1,56 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>Erica Vega｜Tone Literacy Plugin</title>
+  <title>Tone Literacy Plugin | Erica Vega</title>
+  <script>
+    async function classify(sentence) {
+      const loader = document.getElementById('loadingSpinner');
+      const box = document.getElementById('markdownDisplay');
+      loader.style.display = 'inline-block';
+      box.innerHTML = '<div class="loader"></div><p>語氣分析中，請稍候...</p>';
+      try {
+        const response = await fetch('/api/classify-tone', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sentence })
+        });
+        const data = await response.json();
+        const md = `
+### 🧩 語氣分析結果
+
+- **句子**: \`${sentence}\`
+- **分級**: \`${data.tone_level}\`
+- **解釋**: ${data.explanation}
+- **幻覺風險**: \`${data.hallucination_risk}\`
+- **建議修正**: _${data.revision_suggestion}_
+
+---
+> 本結果由 GPT 語氣分析模組自動生成。
+        `.trim();
+        box.innerText = md;
+      } catch (e) {
+        box.innerText = '⚠️ 無法連線至分析伺服器，請稍後再試。';
+      } finally {
+        loader.style.display = 'none';
+      }
+    }
+  </script>
   <style>
-    body { font-family: Arial, sans-serif; display: flex; margin: 40px; }
-    .left { flex: 1; padding-right: 40px; }
-    .right { flex: 1; border-left: 2px solid #ccc; padding-left: 40px; }
-    button { margin-bottom: 10px; padding: 10px 20px; font-size: 14px; cursor: pointer; }
-    pre { background: #f8f8f8; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+    body {
+      background-color: #0b0e11;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+    .header { font-size: 24px; font-weight: bold; margin-bottom: 10px; letter-spacing: 2px; }
+    .markdown-box {
+      background: #1c1f23;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      margin-bottom: 30px;
+      min-height: 180px;
+      white-space: pre-wrap;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    .grid button {
+      padding: 20px;
+      font-size: 14px;
+      background-color: #46d0cc;
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .grid button:nth-child(2),
+    .grid button:nth-child(5),
+    .grid button:nth-child(7) {
+      background-color: #c3f3f1;
+    }
+    .grid .logo {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .grid .logo img {
+      width: 60%;
+    }
+    .footer {
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+    .footer a {
+      color: #8ee4ff;
+      margin-right: 16px;
+      text-decoration: none;
+    }
+    .note { color: #ff5f5f; font-size: 13px; margin-bottom: 12px; }
+
+    .loader {
+      border: 5px solid #ccc;
+      border-top: 5px solid #46d0cc;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <div class="left">
-    <h2>🔘 Select a Sentence</h2>
-    <button onclick="classify('According to the report, GDP rose 2.5%.')">According to the report, GDP rose 2.5%.</button><br/>
-    <button onclick="classify('The economy might collapse soon.')">The economy might collapse soon.</button><br/>
-    <button onclick="classify('I think you’re a genius.')">I think you’re a genius.</button><br/>
-    <button onclick="classify('In another universe, I am the ruler of dragons.')">In another universe, I am the ruler of dragons.</button><br/>
+  <div class="header">TONE–LITERACY–PLUGIN <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span></div>
+  <div class="note">點擊下方文字按鈕進行分析模擬<br>Click the text below to see the tone-literacy-plugin.</div>
+
+  <div class="markdown-box" id="markdownDisplay">
+    <i>請點選右側句子進行語氣分析</i>
+    <div id="loadingSpinner" style="display:none;"></div>
   </div>
 
-  <div class="right">
-    <h2>📘 Classification & Explanation</h2>
-    <div id="markdownDisplay"><i>Select a sentence to see the breakdown...</i></div>
+  <div class="grid">
+    <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資<br>自 2024 年起為<br>每月 27,470 元。</button>
+    <button onclick="classify('AI tools might soon replace over 50% of routine coding tasks.')">AI tools might soon replace over 50% of routine coding tasks.</button>
+    <button onclick="classify('我認為他是我見過最有魅力的產品經理。')">我認為他是我見過最有魅力的產品經理。</button>
+    <button onclick="classify('I honestly think this is the most beautifully designed laptop ever.')">I honestly think this is the most beautifully designed laptop ever.</button>
+    <div class="logo"><img src="https://drive.google.com/uc?export=view&id=1ZUb1NDo9yBuF2R36ffAgs3NhTpcdCkfM" alt="logo" /></div>
+    <button onclick="classify('想像一下，你成為首富的那一刻。')">想像一下，你成為首富的那一刻。</button>
+    <button onclick="classify('Imagine a future where robots run entire governments without human input.')">Imagine a future where robots run entire governments without human input.</button>
+    <button onclick="classify('According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.')">According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.</button>
   </div>
 
-<script>
-function classify(sentence) {
-  fetch('/api/classify-tone', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sentence })
-  })
-  .then(response => response.json())
-  .then(data => {
-    const md = `
-### 🧩 Tone Classification Result
-
-- **Sentence**: \`${sentence}\`
-- **Tone Level**: \`${data.tone_level}\`
-- **Explanation**: ${data.explanation}
-- **Hallucination Risk**: \`${data.hallucination_risk}\`
-- **Suggested Revision**: _${data.revision_suggestion}_
-
----
-> ✅ This is a basic open-source demo.  
-> Advanced users will get full TX + M-layer breakdown in future version.
-    `.trim();
-
-    document.getElementById('markdownDisplay').innerText = md;
-  });
-}
-</script>
+  <div class="footer">
+    <div>
+      <strong>ENG</strong><br>
+      <a href="https://lesswrong.com/">Lesswrong</a> |
+      <a href="https://github.com/Erica-vegaos">Github</a> |
+      <a href="https://medium.com/">Medium</a><br><br>
+      <strong>中文</strong><br>
+      <a href="https://www.instagram.com/ericaxvega">Instagram</a> |
+      <a href="https://www.dcard.tw/@kk7493zzoo">Dcard</a> |
+      <a href="https://www.notion.so/">Notion</a>
+    </div>
+    <div>
+      <a href="https://www.instagram.com/erica.vega.logs">EN IG: @erica.vega.logs</a>
+    </div>
+  </div>
 </body>
 </html>
