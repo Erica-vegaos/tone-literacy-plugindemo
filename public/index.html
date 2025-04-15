@@ -4,138 +4,52 @@
   <meta charset="UTF-8" />
   <title>Tone Literacy Plugin | DEMO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      background-color: #0b0e11;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-    .header {
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 16px;
-    }
-    .note {
-      font-size: 12px;
-      line-height: 1.6;
-      text-align: center;
-      color: #cccccc;
-      margin-bottom: 24px;
-      max-width: 780px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .markdown-box {
-      background: #1c1f23;
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      min-height: 280px;
-      margin-bottom: 20px;
-      position: relative;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 10px;
-      max-width: 1080px;
-      margin: 0 auto;
-    }
-    .grid button {
-      padding: 14px;
-      font-size: 14px;
-      background-color: #46d0cc;
-      border: none;
-      border-radius: 10px;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .grid .logo {
-      background-color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .grid .logo img {
-      width: 60%;
-    }
-    #loadingSpinner {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-    .loader {
-      border: 5px solid #ccc;
-      border-top: 5px solid #46d0cc;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .result-block p {
-      margin: 8px 0;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-    .tone-a { background: #a6f7c6; color: #000; }
-    .tone-b { background: #a9d9ff; color: #000; }
-    .tone-c { background: #ffd29d; color: #000; }
-    .tone-d { background: #e3b0f7; color: #000; }
-    .footer {
-      font-size: 13px;
-      color: #aaa;
-      text-align: center;
-      margin-top: 40px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <div class="header">
-    <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/topicon.png" style="height: 22px; vertical-align: middle; margin-right: 6px;">
-    TONE–LITERACY–PLUGIN <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span>
+  <div style="display: flex; justify-content: center; margin-top: 20px;">
+    <div class="header" style="display: flex; align-items: center; gap: 12px;">
+      <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
+        <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/topicon.png" alt="Tone Literacy Plugin" style="height: 22px;" />
+      </a>
+      <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span>
+    </div>
   </div>
 
-  <div class="note">
+  <div class="note" style="font-size: 12px; line-height: 1.6; text-align: center; color: #cccccc; margin-bottom: 24px; max-width: 780px; margin: 12px auto;">
     本工具為 GPT 語氣分級模組展示，用於判斷句子的語氣結構與幻覺風險。點擊任一句子，查看以下四項指標：<br>
     語氣分級（A–D）｜分級解釋｜幻覺風險（高／中／低）｜使用建議
   </div>
 
-  <div class="markdown-box" id="markdownText">
-    <i>請點選下方任一句子開始分析語氣</i>
-    <div id="loadingSpinner"><div class="loader"></div></div>
-  </div>
+  <div class="layout-desktop" style="max-width: 1080px; margin: 0 auto;">
+    <div class="markdown-box">
+      <div id="loadingSpinner" style="display:none; flex-direction:column; align-items:center; justify-content:center; margin-top:20px;">
+        <div class="loader"></div>
+        <p style="text-align:center; font-size:12px;">分析中，請稍候…</p>
+      </div>
+      <div id="markdownText">
+        <i>請點選句子進行語氣分析 <br> Click the text to see the tone-literacy-plugin.</i>
+      </div>
+    </div>
 
-  <div class="grid">
-    <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資<br>自 2024 年起為<br>每月 27,470 元。</button>
-    <button onclick="classify('大型語言模型未來可能將取代大部分初階客服工作。')">大型語言模型未來可能將<br>取代大部分初階客服工作。</button>
-    <button onclick="classify('我認為他是我見過最有魅力的產品經理。')">我認為他是我見過<br>最有魅力的產品經理。</button>
-    <button onclick="classify('想像一下，你成為首富的那一刻。')">想像一下，你成為首富的那一刻。</button>
-    <button onclick="classify('According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.')">According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.</button>
-    <button onclick="classify('AI tools might soon replace over 50% of routine coding tasks.')">AI tools might soon replace over 50% of routine coding tasks.</button>
-    <button onclick="classify('I honestly think this is the most beautifully designed laptop ever.')">I honestly think this is the most beautifully designed laptop ever.</button>
-    <button onclick="classify('Imagine a future where robots run entire governments without human input.')">Imagine a future where robots run entire governments without human input.</button>
-    <div class="logo">
-      <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
-        <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/logo.png" alt="logo" />
-      </a>
+    <div class="grid">
+      <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資<br>自 2024 年起為<br>每月 27,470 元。</button>
+      <button onclick="classify('大型語言模型未來可能將取代大部分初階客服工作。')">大型語言模型未來可能將<br>取代大部分初階客服工作。</button>
+      <button onclick="classify('我認為他是我見過最有魅力的產品經理。')">我認為他是我見過<br>最有魅力的產品經理。</button>
+      <button onclick="classify('想像一下，你成為首富的那一刻。')">想像一下，你成為首富的那一刻。</button>
+      <button onclick="classify('According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.')">According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.</button>
+      <button onclick="classify('AI tools might soon replace over 50% of routine coding tasks.')">AI tools might soon replace over 50% of routine coding tasks.</button>
+      <button onclick="classify('I honestly think this is the most beautifully designed laptop ever.')">I honestly think this is the most beautifully designed laptop ever.</button>
+      <button onclick="classify('Imagine a future where robots run entire governments without human input.')">Imagine a future where robots run entire governments without human input.</button>
+      <div class="logo"><img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/logo.png" alt="logo" /></div>
     </div>
   </div>
 
-  <div class="footer">
-    Created by the Erica Vega team to promote tone literacy and GPT structural awareness.<br>
+  <div class="footer" style="text-align: center; font-size: 12px; margin-top: 40px; color: #999;">
+    Created by the Erica Vega team to promote tone literacy and GPT structural awareness. <br>
     由 Erica Vega 團隊設計，推動 GPT 語氣素養與結構理解力。
   </div>
 
-  <script src="classify-tone.js"></script>
+  <script src="/api/classify-tone.js"></script>
 </body>
 </html>
