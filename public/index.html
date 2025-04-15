@@ -12,12 +12,6 @@ const staticToneMap = {
     hallucination_risk: "低",
     revision_suggestion: "無需修改。"
   },
-  "AI tools might soon replace over 50% of routine coding tasks.": {
-    grade: "B",
-    explanation: "屬於根據趨勢的合理預測或推論性語句。",
-    hallucination_risk: "中",
-    revision_suggestion: "可補充近期資料或具體案例以強化可信度。"
-  },
   "我認為他是我見過最有魅力的產品經理。": {
     grade: "C",
     explanation: "屬於主觀評價與個人觀點。",
@@ -29,6 +23,12 @@ const staticToneMap = {
     explanation: "屬於幻想式敘事語句，非真實語境。",
     hallucination_risk: "高",
     revision_suggestion: "如要轉為實際推論，應補充具體條件與背景。"
+  },
+  "大型語言模型未來可能將取代大部分初階客服工作。": {
+    grade: "B",
+    explanation: "屬於對技術趨勢的合理推論，非確定性事實。",
+    hallucination_risk: "中",
+    revision_suggestion: "可加入研究或數據來源以增強信度。"
   },
   "AI tools might soon replace over 50% of routine coding tasks.": {
     grade: "B",
@@ -62,20 +62,30 @@ function classify(sentence) {
   loader.style.display = 'flex';
   textBox.innerHTML = '';
 
-  const result = staticToneMap[sentence] || {
+  const fallback = {
     grade: "C",
     explanation: "預設分類：未收錄語句，判定為主觀語氣。",
     hallucination_risk: "中",
     revision_suggestion: "請使用指定範例句，或補充內容以利分析。"
   };
 
+  const result = staticToneMap[sentence] || fallback;
+
   const isChinese = /[\u4e00-\u9fff]/.test(sentence);
   const riskMap = {
-  high: "高", medium: "中", low: "低",
-  高: "high", 中: "medium", 低: "low"
-};
+    high: "高", medium: "中", low: "低",
+    高: "high", 中: "medium", 低: "low"
+  };
 
-const riskLabel = riskMap[result.hallucination_risk] || result.hallucination_risk;
+  let riskLabel;
+  if (isChinese) {
+    riskLabel = riskMap[result.hallucination_risk] || result.hallucination_risk;
+  } else {
+    // 若值是中文，找 key 對應英文；否則直接用英文原樣
+    riskLabel = ["高", "中", "低"].includes(result.hallucination_risk)
+      ? Object.entries(riskMap).find(([k, v]) => v === result.hallucination_risk)?.[0] || result.hallucination_risk
+      : result.hallucination_risk;
+  }
 
   const output = isChinese
     ? `<div class="result-block">
@@ -84,14 +94,14 @@ const riskLabel = riskMap[result.hallucination_risk] || result.hallucination_ris
         <p><strong>語氣解釋：</strong><br>${result.explanation}</p>
         <p><strong>幻覺風險：</strong> <span class="risk-${result.hallucination_risk}">${riskLabel}</span></p>
         <p><strong>使用建議：</strong><br>${result.revision_suggestion}</p>
-       </div>`
+      </div>`
     : `<div class="result-block">
         <p><strong>Sentence:</strong><br>${sentence}</p>
         <p><strong>Grade:</strong> <span class="tone-level tone-${result.grade.toLowerCase()}">${result.grade}</span></p>
         <p><strong>Explanation:</strong><br>${result.explanation}</p>
         <p><strong>Hallucination Risk:</strong> <span class="risk-${result.hallucination_risk}">${riskLabel}</span></p>
         <p><strong>Suggestion:</strong><br>${result.revision_suggestion}</p>
-       </div>`;
+      </div>`;
 
   setTimeout(() => {
     textBox.innerHTML = output;
@@ -99,6 +109,7 @@ const riskLabel = riskMap[result.hallucination_risk] || result.hallucination_ris
   }, 400); // 模擬 loading
 }
 </script>
+
 
 
 
