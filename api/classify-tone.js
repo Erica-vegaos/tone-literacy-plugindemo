@@ -20,11 +20,11 @@ export default function handler(req, res) {
       hallucination_risk: "高",
       revision_suggestion: "如要轉為實際推論，應補充具體條件與背景。"
     },
-    "GPT 模型是一種基於 Transformer 架構的深度學習演算法。": {
-      grade: "A",
-      explanation: "為技術事實描述，可查證、具客觀性。",
-      hallucination_risk: "低",
-      revision_suggestion: "無需修改。"
+    "大型語言模型未來可能將取代大部分初階客服工作。": {
+  grade: "B",
+  explanation: "屬於對技術趨勢的合理推論，非確定性事實。",
+  hallucination_risk: "中",
+  revision_suggestion: "可加入研究或數據來源以增強信度。"
     },
     "AI tools might soon replace over 50% of routine coding tasks.": {
       grade: "B",
