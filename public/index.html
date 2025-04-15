@@ -219,7 +219,13 @@ function classify(sentence) {
 .risk-high { color: #ff6c6c; font-weight: bold; }
 .risk-medium { color: #f9e861; font-weight: bold; }
 .risk-low { color: #3df2b1; font-weight: bold; }
-
+.tone-intro {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #dddddd;
+  display: block;
+  margin-bottom: 16px;
+}
 
 
 
@@ -243,7 +249,7 @@ function classify(sentence) {
     <p style="text-align:center; font-size:12px;">分析中，請稍候…</p>
   </div>
   <div id="markdownText">
-   <i>
+   <i class="tone-intro">
 本工具為 GPT 語氣分級模組展示，用於判斷句子的語氣結構與幻覺風險。<br>
 點擊任一句子，即可查看以下四項指標：<br><br>
 
@@ -258,7 +264,7 @@ function classify(sentence) {
 由 Erica Vega 團隊設計，推動 GPT 語氣素養與結構理解力。
 </i>
 
-<i>
+<i class="tone-intro">
 This tool is a GPT tone grading demo to evaluate sentence tone and hallucination risk.<br>
 Click any sentence below to view four indicators:<br><br>
 
