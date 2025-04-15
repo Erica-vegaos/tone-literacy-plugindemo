@@ -21,10 +21,10 @@ export default function handler(req, res) {
       revision_suggestion: "如要轉為實際推論，應補充具體條件與背景。"
     },
     "大型語言模型未來可能將取代大部分初階客服工作。": {
-  grade: "B",
-  explanation: "屬於對技術趨勢的合理推論，非確定性事實。",
-  hallucination_risk: "中",
-  revision_suggestion: "可加入研究或數據來源以增強信度。"
+      grade: "B",
+      explanation: "屬於對技術趨勢的合理推論，非確定性事實。",
+      hallucination_risk: "中",
+      revision_suggestion: "可加入研究或數據來源以增強信度。"
     },
     "AI tools might soon replace over 50% of routine coding tasks.": {
       grade: "B",
@@ -52,6 +52,7 @@ export default function handler(req, res) {
     }
   };
 
+  // fallback 機制
   const result = staticToneMap[sentence] || {
     grade: "C",
     explanation: "預設分類：無法比對輸入，判定為主觀或模擬語氣。",
