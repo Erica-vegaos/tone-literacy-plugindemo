@@ -226,7 +226,19 @@ function classify(sentence) {
   display: block;
   margin-bottom: 16px;
 }
-
+.credit-block {
+  text-align: center;
+  color: #ccc;
+  font-size: 12px;
+  margin-top: 24px;
+  line-height: 1.6;
+}
+@media (max-width: 768px) {
+  .credit-block {
+    padding: 0 12px;
+    font-size: 11px;
+  }
+}
 
 
   </style>
@@ -320,11 +332,10 @@ Click any sentence below to view four indicators:<br><br>
       <td></td>
     </tr>
  </table>
-</div> <!-- 結束 footer 表格 -->
-<p style="color: #ccc; font-size: 12px; margin-top: 12px;">
-  Created by the Erica Vega team to promote tone literacy and GPT structural awareness.<br>
-  由 Erica Vega 團隊設計，推動 GPT 語氣素養與結構理解力。
-</p>
+</div> <div class="credit-block">
+  <p>Created by the Erica Vega team to promote tone literacy and GPT structural awareness.<br>
+  由 Erica Vega 團隊設計，推動 GPT 語氣素養與結構理解力。</p>
+</div>
 
 
 </div>
