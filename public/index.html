@@ -70,8 +70,18 @@ function classify(sentence) {
   };
 
   const isChinese = /[\u4e00-\u9fff]/.test(sentence);
-  const riskMap = { high: "高", medium: "中", low: "低" };
-  const riskLabel = isChinese ? riskMap[result.hallucination_risk] : result.hallucination_risk;
+  const riskMap = {
+  high: "高",
+  medium: "中",
+  low: "低",
+  高: "high",
+  中: "medium",
+  低: "low"
+};
+
+const riskLabel = isChinese
+  ? riskMap[result.hallucination_risk] || result.hallucination_risk
+  : result.hallucination_risk;
 
   const output = isChinese
     ? `<div class="result-block">
@@ -177,7 +187,7 @@ function classify(sentence) {
       align-items: center;
     }
     .grid .logo img {
-      width: 100%;
+      width: 90%;
     }
     .footer {
       font-size: 14px;
