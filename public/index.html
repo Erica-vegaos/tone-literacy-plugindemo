@@ -79,7 +79,7 @@ function classify(sentence) {
 
   let riskLabel;
   if (isChinese) {
-    riskLabel = riskMap[result.hallucination_risk] || result.hallucination_risk;
+    const riskLabel = result.hallucination_risk;
   } else {
     // 若值是中文，找 key 對應英文；否則直接用英文原樣
     riskLabel = ["高", "中", "低"].includes(result.hallucination_risk)
