@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>Tone Literacy Plugin | Responsive</title>
+  <title>Tone Literacy Plugin | DEMO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -13,13 +13,20 @@
       padding: 20px;
     }
     .header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
       font-size: 24px;
       font-weight: bold;
-      letter-spacing: 2px;
+      text-align: center;
+      margin-top: 16px;
+    }
+    .note {
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: center;
+      color: #cccccc;
+      margin-bottom: 24px;
+      max-width: 780px;
+      margin-left: auto;
+      margin-right: auto;
     }
     .markdown-box {
       background: #1c1f23;
@@ -28,24 +35,14 @@
       border: 1px solid #444;
       min-height: 280px;
       margin-bottom: 20px;
-    }
-    .loader {
-      border: 5px solid #ccc;
-      border-top: 5px solid #46d0cc;
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      position: relative;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 10px;
+      max-width: 1080px;
+      margin: 0 auto;
     }
     .grid button {
       padding: 14px;
@@ -56,77 +53,89 @@
       color: #000;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s ease;
     }
-    .grid button:hover {
-      transform: scale(1.03);
-      background-color: #60e3de;
+    .grid .logo {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+    .grid .logo img {
+      width: 60%;
+    }
+    #loadingSpinner {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .loader {
+      border: 5px solid #ccc;
+      border-top: 5px solid #46d0cc;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .result-block p {
+      margin: 8px 0;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .tone-a { background: #a6f7c6; color: #000; }
+    .tone-b { background: #a9d9ff; color: #000; }
+    .tone-c { background: #ffd29d; color: #000; }
+    .tone-d { background: #e3b0f7; color: #000; }
     .footer {
-      text-align: left;
       font-size: 13px;
-      color: #8ee4ff;
-      margin-top: 40px;
-    }
-    .footer a {
-      color: #8ee4ff;
-      text-decoration: none;
-      margin-right: 12px;
-    }
-    .credit {
-      font-size: 12px;
-      color: #888;
+      color: #aaa;
       text-align: center;
       margin-top: 40px;
     }
   </style>
-  <script src="classify-tone.js"></script>
 </head>
 <body>
+
   <div class="header">
-    <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/topicon.png" alt="Logo" style="height:24px;" />
-    <span>TONE–LITERACY–PLUGIN <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span></span>
+    <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/topicon.png" style="height: 22px; vertical-align: middle; margin-right: 6px;">
+    TONE–LITERACY–PLUGIN <span style="background:#3963f0; padding:2px 6px; border-radius:4px; font-size:14px;">DEMO</span>
   </div>
 
-  <div class="markdown-box">
-    <div id="loadingSpinner" class="loader" style="display:none;"></div>
-    <div id="markdownText">
-      <i>請點選句子進行語氣分析 Click a sentence below for tone analysis.</i>
-    </div>
+  <div class="note">
+    本工具為 GPT 語氣分級模組展示，用於判斷句子的語氣結構與幻覺風險。點擊任一句子，查看以下四項指標：<br>
+    語氣分級（A–D）｜分級解釋｜幻覺風險（高／中／低）｜使用建議
+  </div>
+
+  <div class="markdown-box" id="markdownText">
+    <i>請點選下方任一句子開始分析語氣</i>
+    <div id="loadingSpinner"><div class="loader"></div></div>
   </div>
 
   <div class="grid">
-    <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資自 2024 年起為每月 27,470 元。</button>
-    <button onclick="classify('AI tools might soon replace over 50% of routine coding tasks.')">AI tools might soon replace over 50% of routine coding tasks.</button>
-    <button onclick="classify('我認為他是我見過最有魅力的產品經理。')">我認為他是我見過最有魅力的產品經理。</button>
-    <button onclick="classify('I honestly think this is the most beautifully designed laptop ever.')">I honestly think this is the most beautifully designed laptop ever.</button>
+    <button onclick="classify('台灣的法定最低工資自 2024 年起為每月 27,470 元。')">台灣的法定最低工資<br>自 2024 年起為<br>每月 27,470 元。</button>
+    <button onclick="classify('大型語言模型未來可能將取代大部分初階客服工作。')">大型語言模型未來可能將<br>取代大部分初階客服工作。</button>
+    <button onclick="classify('我認為他是我見過最有魅力的產品經理。')">我認為他是我見過<br>最有魅力的產品經理。</button>
     <button onclick="classify('想像一下，你成為首富的那一刻。')">想像一下，你成為首富的那一刻。</button>
-    <button onclick="classify('Imagine a future where robots run entire governments without human input.')">Imagine a future where robots run entire governments without human input.</button>
     <button onclick="classify('According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.')">According to IEEE, the USB4 protocol supports up to 40Gbps data transfer.</button>
-    <button onclick="classify('GPT 模型是一種基於 Transformer 架構的深度學習演算法。')">GPT 模型是一種基於 Transformer 架構的深度學習演算法。</button>
+    <button onclick="classify('AI tools might soon replace over 50% of routine coding tasks.')">AI tools might soon replace over 50% of routine coding tasks.</button>
+    <button onclick="classify('I honestly think this is the most beautifully designed laptop ever.')">I honestly think this is the most beautifully designed laptop ever.</button>
+    <button onclick="classify('Imagine a future where robots run entire governments without human input.')">Imagine a future where robots run entire governments without human input.</button>
+    <div class="logo">
+      <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
+        <img src="https://raw.githubusercontent.com/Erica-vegaos/tone-literacy-plugindemo/main/public/logo.png" alt="logo" />
+      </a>
+    </div>
   </div>
 
   <div class="footer">
-    <table style="border-collapse: collapse;">
-      <tr><td colspan="4" style="padding: 12px 0;"><strong>ENG</strong></td></tr>
-      <tr>
-        <td><a href="https://lesswrong.com/">Lesswrong</a></td>
-        <td><a href="https://github.com/Erica-vegaos">GitHub</a></td>
-        <td><a href="https://medium.com/">Medium</a></td>
-        <td><a href="https://www.instagram.com/erica.vega.logs">Instagram@erica.vega.logs</a></td>
-      </tr>
-      <tr>
-        <td><strong>中文</strong></td>
-        <td><a href="https://www.notion.so/">Notion</a></td>
-        <td><a href="https://www.dcard.tw/@kk7493zzoo">Dcard</a></td>
-        <td><a href="https://www.instagram.com/ericaxvega">Instagram@ericaxvega</a></td>
-      </tr>
-    </table>
-  </div>
-
-  <div class="credit">
     Created by the Erica Vega team to promote tone literacy and GPT structural awareness.<br>
     由 Erica Vega 團隊設計，推動 GPT 語氣素養與結構理解力。
   </div>
+
+  <script src="classify-tone.js"></script>
 </body>
 </html>
